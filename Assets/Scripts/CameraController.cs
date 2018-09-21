@@ -44,15 +44,15 @@ public class CameraController : MonoBehaviour {
         CameraMovement();
         CheckBoundary();
 
-        if (Input.GetButtonDown("TestButton"))
+        if (Input.GetButtonDown("FocusCamera"))
         {
-            Debug.Log("Testing");
+            Debug.Log("Focusing");
             trackingPlayerCam = true;
         }
         if (trackingPlayerCam)
-            focusTarget(player);
+            FocusTarget(player);
         else if (!trackingPlayerCam)
-            focusTarget(mainCam);
+            FocusTarget(mainCam);
 
     }
 
@@ -100,7 +100,7 @@ public class CameraController : MonoBehaviour {
         myCam.orthographicSize = camSize;
     }
 
-    void focusTarget(GameObject camTarget)
+    public void FocusTarget(GameObject camTarget)
     {
         newCamPosition = new Vector3(camTarget.transform.position.x, camTarget.transform.position.y, mainCam.transform.position.z);
         camPosition = Vector3.Lerp(camPosition, newCamPosition, Time.deltaTime * camLerpSpeed);

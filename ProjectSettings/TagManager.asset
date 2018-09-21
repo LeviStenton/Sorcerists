@@ -4,7 +4,11 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - CameraDirector
+  - UiController
+  - Enemy
+  - SpellTarget
+  - Ground
+  - SpellCharger
   layers:
   - Default
   - TransparentFX
