@@ -7,9 +7,12 @@ public class SpellTargeting : MonoBehaviour {
     Transform myTransform;
     PlayerController playerController;
     CameraController cameraController;
+    GameController gameController;
     ChargeUpRotate chargeUpRot;
     public GameObject spellChargeRot;
     public GameObject player;
+
+    public Vector3 spellLauDir;
 
 
     public float chargeRotSpeed;
@@ -20,16 +23,19 @@ public class SpellTargeting : MonoBehaviour {
     public bool targetConfirmed = false;
     public bool spellOver = false;
     public bool chargedUpSpell = false;
+    public bool readyToCharge = false;
 
 	// Use this for initialization
 	void Start ()
     {
         playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-        cameraController = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraController>();        
+        cameraController = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraController>();
+        gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
 
         player = GameObject.FindGameObjectWithTag("Player");
         myTransform = this.transform;
         playerController.canMove = false;
+        readyToCharge = false;
     }
 	
 	// Update is called once per frame
@@ -47,13 +53,18 @@ public class SpellTargeting : MonoBehaviour {
         {
             myTransform.position = GameObject.FindGameObjectWithTag("SpellTarget").transform.position;            
             cameraController.FocusTarget(player);
-            Instantiate(spellChargeRot, playerController.transform.position, playerController.transform.rotation);
-            chargeUpRot = GameObject.FindGameObjectWithTag("SpellCharger").GetComponent<ChargeUpRotate>();
+            if (readyToCharge && !gameController.turnOver && !chargedUpSpell)
+            {
+                Instantiate(spellChargeRot, playerController.transform.position, playerController.transform.rotation);
+                chargeUpRot = GameObject.FindGameObjectWithTag("SpellCharger").GetComponent<ChargeUpRotate>();
+                readyToCharge = false;
+            }
         }
 
         if (chargedUpSpell)
         {
             spellMoveSpeed = chargeUpRot.chargeUp.value;
+            spellLauDir = chargeUpRot.spellLauDir;
         }
 
         if (spellOver)
@@ -65,9 +76,10 @@ public class SpellTargeting : MonoBehaviour {
 
     void ConfirmTarget()
     {
-        if (Input.GetButtonDown("LeftMouse"))
+        if (Input.GetButtonUp("LeftMouse"))
         {
             targetConfirmed = true;
+            readyToCharge = true;
         }
     }   
 

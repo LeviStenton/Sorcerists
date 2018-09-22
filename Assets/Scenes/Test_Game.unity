@@ -535,7 +535,7 @@ GameObject:
   m_Component:
   - component: {fileID: 919601482}
   m_Layer: 5
-  m_Name: Spell Buttons
+  m_Name: Spell Selection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -921,7 +921,7 @@ Prefab:
     - target: {fileID: 114431405818892262, guid: 5411e0e82087a7c4fb0def0a25ba7c81,
         type: 2}
       propertyPath: spellChargeSpeed
-      value: 20
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5411e0e82087a7c4fb0def0a25ba7c81, type: 2}
@@ -1145,8 +1145,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86bcf86939ad8e64a97abd2a791f5e06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spellSelection: {fileID: 0}
-  spellSelHighPos: {fileID: 0}
-  spellSelLowPos: {fileID: 0}
+  spellSelection: {fileID: 919601481}
+  spellSelHighPos: {fileID: 173942763}
+  spellSelLowPos: {fileID: 1030755267}
   playerHealthText: {fileID: 678604956}
   enemyHealthText: {fileID: 1251379124}

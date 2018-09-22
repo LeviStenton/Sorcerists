@@ -29,7 +29,6 @@ public class PlayerController : MonoBehaviour {
     const float skinWidth = .015f;
     public int horizontalRayCount = 4;
     public int verticalRayCount = 4;
-    float horizontalRaySpacing;
     float verticalRaySpacing;
     RaycastOrigins raycastOrigins;
 
@@ -172,8 +171,6 @@ public class PlayerController : MonoBehaviour {
 
         horizontalRayCount = Mathf.Clamp(horizontalRayCount, 2, int.MaxValue);
         verticalRayCount = Mathf.Clamp(verticalRayCount, 2, int.MaxValue);
-
-        horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
     }
 
     struct RaycastOrigins
@@ -220,6 +217,7 @@ public class PlayerController : MonoBehaviour {
             spellTargeting.spellOver = false;
             Instantiate(arcMisSpell, myTransform.position, myTransform.rotation);
             spellTargeting.arcaneMissiles = false;
+            gameController.turnOver = true;
         }
     }
 }

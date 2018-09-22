@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4778367287141342}
   - component: {fileID: 212155711495183000}
   - component: {fileID: 114351334675676142}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: SpellTarget
   m_TagString: SpellTarget
   m_Icon: {fileID: 0}
@@ -54,11 +54,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spellChargeRot: {fileID: 1133260382397864, guid: 0f057b29526cb1d4f8494f3d04c942bb,
     type: 2}
+  player: {fileID: 0}
+  spellLauDir: {x: 0, y: 0, z: 0}
   chargeRotSpeed: 5
+  spellMoveSpeed: 0
   arcaneMissiles: 1
   targetConfirmed: 0
   spellOver: 0
-  chargeUpSpell: 0
+  chargedUpSpell: 0
+  readyToCharge: 0
 --- !u!212 &212155711495183000
 SpriteRenderer:
   m_ObjectHideFlags: 1

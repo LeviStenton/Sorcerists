@@ -11,8 +11,13 @@ public class ArcaneMissiles : MonoBehaviour {
         
     public float lifeTime;
     public float damage;
+    public float spellMoveSpeed;
 
-    Vector3 spellTarget;
+    bool tracking;
+
+    public Vector3 spellTarget;
+    public Vector3 spellLauDir;
+    Quaternion targetRot;
 
     GameController gameController;
     EnemyController enemyController;
@@ -24,46 +29,36 @@ public class ArcaneMissiles : MonoBehaviour {
     //public AudioClip hitSound;
     //private AudioSource source;
 
+    void Awake()
+    {
+        spellTarget = GameObject.FindGameObjectWithTag("SpellTarget").transform.position;
+        trail = GetComponent<TrailRenderer>();
+        //source = GetComponent<AudioSource>();
+        tracking = false;
+        StartCoroutine(happenAfterTime());        
+    }
+
+
     void Start()
     {
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         enemyController = GameObject.FindGameObjectWithTag("Enemy").GetComponent<EnemyController>();
         spellTargeting = GameObject.FindGameObjectWithTag("SpellTarget").GetComponent<SpellTargeting>();
-        spellTarget = GameObject.FindGameObjectWithTag("SpellTarget").transform.position;
-    }
-
-    //Use this for initialization
-    void Awake()
-    {
-        //trail = GetComponent<TrailRenderer>();
-        //source = GetComponent<AudioSource>();
-
-        StartCoroutine(happenAfterTime());
-
-        Movement();
+        spellLauDir = spellTargeting.spellLauDir;
+        spellMoveSpeed = spellTargeting.spellMoveSpeed;
+        //StartCoroutine(delayTracking());
     }
 
     void Update()
     {
-        Movement();
-    }
+        transform.position += spellLauDir * spellMoveSpeed * Time.deltaTime;
 
-    public void Movement()
-    {
-        Debug.Log(transform.position);
-
-        transform.position += transform.up * spellTargeting.spellMoveSpeed * Time.deltaTime;
-        
-        //Missle Guidance
-        if (spellTarget != null)
-        {
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.FromToRotation (transform.position, spellTarget - transform.position),Time.deltaTime);
-
-            //Quaternion targetRotation = Quaternion.LookRotation(spellTarget - transform.position);
-            //transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        if (spellTarget != null && tracking)
+        {            
+            targetRot = Quaternion.FromToRotation(transform.position, spellTarget - transform.position);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, Time.deltaTime * rotationSpeed);
         }
-
     }
 
     void OnTriggerEnter2D(Collider2D otherObject)
@@ -76,7 +71,6 @@ public class ArcaneMissiles : MonoBehaviour {
             foreach (Transform child in transform)
             {
                 GameObject.Destroy(this.gameObject);
-                spellTargeting.spellOver = true;
             }
             transform.position = Vector3.one * 9999999f;
             Destroy(gameObject/*, hitSound.length*/);
@@ -89,13 +83,19 @@ public class ArcaneMissiles : MonoBehaviour {
             foreach (Transform child in transform)
             {
                 GameObject.Destroy(child.gameObject);
-                spellTargeting.spellOver = true;
             }
             transform.position = Vector3.one * 9999999f;
             Destroy(gameObject/*, hitSound.length*/);
             spellTargeting.spellOver = true;
         }
     }
+
+    /*IEnumerator delayTracking()
+    {
+        yield return new WaitForSeconds(spellMoveSpeed / 5f);
+        Debug.Log("Tracking");
+        tracking = true;
+    }*/
 
     IEnumerator happenAfterTime()
     {
