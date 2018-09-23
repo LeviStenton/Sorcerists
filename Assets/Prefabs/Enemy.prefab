@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 70117247909801916}
   - component: {fileID: 50923350932256246}
   - component: {fileID: 114033073426394796}
-  m_Layer: 9
+  m_Layer: 2
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -62,7 +62,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 4
+  m_Constraints: 5
 --- !u!70 &70117247909801916
 CapsuleCollider2D:
   m_ObjectHideFlags: 1

@@ -52,17 +52,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc03513eb11fe264492433ce1b6b2afe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spellChargeRot: {fileID: 1133260382397864, guid: 0f057b29526cb1d4f8494f3d04c942bb,
+  spellChargeRot: {fileID: 1567315893781354, guid: 153b409fea37db449afeb81f9e34e73c,
     type: 2}
   player: {fileID: 0}
-  spellLauDir: {x: 0, y: 0, z: 0}
-  chargeRotSpeed: 5
-  spellMoveSpeed: 0
-  arcaneMissiles: 1
-  targetConfirmed: 0
-  spellOver: 0
-  chargedUpSpell: 0
-  readyToCharge: 0
 --- !u!212 &212155711495183000
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -98,7 +90,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 1474cf074ca035b4e9510226f959a6dc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4a0f885dd7c4b154ebf494fbd113da31, type: 3}
   m_Color: {r: 0, g: 1, b: 0.123169184, a: 0.26666668}
   m_FlipX: 0
   m_FlipY: 0

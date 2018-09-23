@@ -37,13 +37,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1380082187440530}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 5.5, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0.055821486, w: 0.9984408}
+  m_LocalPosition: {x: 0, y: 5.75, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 6.4}
 --- !u!50 &50534543195170602
 Rigidbody2D:
   serializedVersion: 4
@@ -90,14 +90,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e91e7208c7ee70f4fb4b58225d2dfd63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerHealth: 100
+  spellChargeSpeed: 3
   moveSpeed: 2
   distToGround: 0
+  canMove: 1
   groundLayer:
     serializedVersion: 2
     m_Bits: 512
+  spellTarget: {fileID: 1454931397728620, guid: 706696076cfdba049a0a274019d62f6f,
+    type: 2}
+  spellChargeRot: {fileID: 1567315893781354, guid: 153b409fea37db449afeb81f9e34e73c,
+    type: 2}
+  arcMisSpell: {fileID: 1794820294262368, guid: 87471d08b90935b4ca4cf87460c59c97,
+    type: 2}
+  arcBombSpell: {fileID: 1794820294262368, guid: 3ee930a886d6edd4ebac8153cd98c2d2,
+    type: 2}
+  arcPortal1: {fileID: 1794820294262368, guid: 81e669e4a00f25648891426c44cc637b, type: 2}
+  arcPortal2: {fileID: 1794820294262368, guid: 9062dfbdf775d2a4bba90239aac5278b, type: 2}
   facingRight: 1
   jumping: 0
   isGrounded: 0
+  targetAndCharge: 0
+  arcaneMissiles: 0
+  arcaneBomb: 0
+  arcaneTeleport: 0
+  arcanePortal: 0
   horizontalRayCount: 4
   verticalRayCount: 4
   jumpHighVecLeft: {x: -0.5, y: 5}
@@ -108,7 +126,15 @@ MonoBehaviour:
   jumpLongPow: 2
   jumpHighRecDelay: 1.8
   jumpLongRecDelay: 0.9
-  playerHealth: 100
+  spellLauDir: {x: 0, y: 0, z: 0}
+  chargeRotSpeed: 0
+  spellMoveSpeed: 0
+  missileShootSpeed: 1
+  targetConfirmed: 0
+  spellOver: 0
+  chargedUpSpell: 0
+  readyToCharge: 0
+  nonChargeUpSpell: 0
 --- !u!114 &114436222883816138
 MonoBehaviour:
   m_ObjectHideFlags: 1

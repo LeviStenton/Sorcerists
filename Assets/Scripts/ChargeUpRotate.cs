@@ -19,10 +19,12 @@ public class ChargeUpRotate : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
+        Debug.Log("Spawned");
         canRot = true;
         chargeUp = GetComponentInChildren<Slider>();
         playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-        spellTargeting = GameObject.FindGameObjectWithTag("SpellTarget").GetComponent<SpellTargeting>();
+        if(playerController.targetAndCharge)
+            spellTargeting = GameObject.FindGameObjectWithTag("SpellTarget").GetComponent<SpellTargeting>();
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();        
 }
 	
@@ -32,11 +34,16 @@ public class ChargeUpRotate : MonoBehaviour {
         if (canRot)
         {
             Vector2 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
             Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
             transform.rotation = Quaternion.Slerp(transform.rotation, rotation, chargeRotSpeed * Time.deltaTime);
         }
-        //spellLauDir = this.transform.up;
+
+        if (playerController.spellOver)
+        {
+            playerController.canMove = true;
+        }
+
         ChargeUpSpell();
     }
 
@@ -50,8 +57,10 @@ public class ChargeUpRotate : MonoBehaviour {
 
         if (Input.GetButtonUp("LeftMouse") || chargeUp.value == chargeUp.maxValue)
         {
-            spellTargeting.chargedUpSpell = true;
+            playerController.chargedUpSpell = true;
             spellLauDir = this.transform.up;
+            playerController.spellLauDir = spellLauDir;
+            playerController.spellMoveSpeed = chargeUp.value;
             Destroy(this.gameObject);           
         }
 

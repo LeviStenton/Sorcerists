@@ -12,18 +12,7 @@ public class SpellTargeting : MonoBehaviour {
     public GameObject spellChargeRot;
     public GameObject player;
 
-    public Vector3 spellLauDir;
-
-
-    public float chargeRotSpeed;
-    public float spellMoveSpeed;
-
-    public bool arcaneMissiles = false;
-
-    public bool targetConfirmed = false;
-    public bool spellOver = false;
-    public bool chargedUpSpell = false;
-    public bool readyToCharge = false;
+    //public Vector3 spellLauDir;   
 
 	// Use this for initialization
 	void Start ()
@@ -35,7 +24,9 @@ public class SpellTargeting : MonoBehaviour {
         player = GameObject.FindGameObjectWithTag("Player");
         myTransform = this.transform;
         playerController.canMove = false;
-        readyToCharge = false;
+        playerController.readyToCharge = false;
+        if (playerController.arcaneTeleport)
+            this.transform.localScale = playerController.transform.localScale;
     }
 	
 	// Update is called once per frame
@@ -46,45 +37,32 @@ public class SpellTargeting : MonoBehaviour {
         Vector3 temp = Input.mousePosition;
         temp.z = 10;        
 
-        if(!targetConfirmed)
+        if(!playerController.targetConfirmed)
             myTransform.position = Camera.main.ScreenToWorldPoint(temp);
 
-        if (targetConfirmed)
+        if (playerController.targetConfirmed)
         {
             myTransform.position = GameObject.FindGameObjectWithTag("SpellTarget").transform.position;            
             cameraController.FocusTarget(player);
-            if (readyToCharge && !gameController.turnOver && !chargedUpSpell)
+            if (playerController.readyToCharge && !gameController.turnOver && !playerController.chargedUpSpell && !playerController.nonChargeUpSpell)
             {
                 Instantiate(spellChargeRot, playerController.transform.position, playerController.transform.rotation);
                 chargeUpRot = GameObject.FindGameObjectWithTag("SpellCharger").GetComponent<ChargeUpRotate>();
-                readyToCharge = false;
+                playerController.readyToCharge = false;
             }
-        }
-
-        if (chargedUpSpell)
-        {
-            spellMoveSpeed = chargeUpRot.chargeUp.value;
-            spellLauDir = chargeUpRot.spellLauDir;
-        }
-
-        if (spellOver)
-        {
-            playerController.canMove = true;
-            Destroy(this.gameObject);
-        }
+            else if (playerController.readyToCharge && !gameController.turnOver && !playerController.chargedUpSpell && playerController.nonChargeUpSpell)
+            {
+                playerController.readyToCharge = false;                
+            }
+        }        
     }
 
     void ConfirmTarget()
     {
         if (Input.GetButtonUp("LeftMouse"))
         {
-            targetConfirmed = true;
-            readyToCharge = true;
+            playerController.targetConfirmed = true;
+            playerController.readyToCharge = true;
         }
-    }   
-
-    public void arcaneMissilesOn()
-    {
-        arcaneMissiles = true;
-    }
+    }     
 }

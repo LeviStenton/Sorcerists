@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
+    public float playerHealth;
+    public float spellChargeSpeed;
     public float moveSpeed;
     float gravity = -20;
     Vector3 velocity;
@@ -16,15 +18,29 @@ public class PlayerController : MonoBehaviour {
     EnemyController enemyController;
     PlayerController playerController;
     SpellTargeting spellTargeting;
+    ChargeUpRotate chargeUpRot;
+    CameraController cameraController;
     Grounded groundedCheck;
     CircleCollider2D cirCol;
     public GameObject spellTarget;
+    public GameObject spellChargeRot;
 
     public GameObject arcMisSpell;
+    public GameObject arcBombSpell;
+    public GameObject arcPortal1;
+    public GameObject arcPortal2;
 
     public bool facingRight = true;
     public bool jumping = false;
     public bool isGrounded;
+    public bool targetAndCharge;
+    public bool hasPortalled1;
+    public bool hasPortalled2;
+
+    public bool arcaneMissiles = false;
+    public bool arcaneBomb = false;
+    public bool arcaneTeleport = false;
+    public bool arcanePortal = false;
 
     const float skinWidth = .015f;
     public int horizontalRayCount = 4;
@@ -41,8 +57,16 @@ public class PlayerController : MonoBehaviour {
     public float jumpHighRecDelay;
     public float jumpLongRecDelay;
 
-    public float playerHealth;
-    public float spellChargeSpeed;
+    public Vector3 spellLauDir;
+    public float chargeRotSpeed;
+    public float spellMoveSpeed;
+    public float missileShootSpeed;
+
+    public bool targetConfirmed = false;
+    public bool spellOver = false;
+    public bool chargedUpSpell = false;
+    public bool readyToCharge = false;
+    public bool nonChargeUpSpell = false;
 
     // Use this for initialization
     void Start()
@@ -50,8 +74,8 @@ public class PlayerController : MonoBehaviour {
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         enemyController = GameObject.FindGameObjectWithTag("Enemy").GetComponent<EnemyController>();
         playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-        groundedCheck = GetComponent<Grounded>();              
-
+        groundedCheck = GetComponent<Grounded>();
+        cameraController = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraController>();
         distToGround = GetComponent<CircleCollider2D>().bounds.extents.y;
         cirCol = GetComponent<CircleCollider2D>();
 
@@ -63,12 +87,15 @@ public class PlayerController : MonoBehaviour {
         Movement();
         Jumping();
         Grounded();
-        PlayerDeath();
+        PlayerDeath();               
 
         if (Input.GetButtonDown("TestButton"))
             TakeDamage(10);
         if(spellTargeting != null)
             ArcaneMissileCast();
+        ArcaneBombCast();
+        ArcaneTeleportCast();
+        ArcanePortalCast();
     }
 
     void Flip()
@@ -196,10 +223,31 @@ public class PlayerController : MonoBehaviour {
         playerHealth -= damage;
     }
 
+    public void noTargetAndCharge()
+    {
+        targetAndCharge = false;
+    }
+
+    public void yesTargetAndCharge()
+    {
+        targetAndCharge = true;
+    }
+
     public void TargetSystem()
-    { 
-        Instantiate(spellTarget, myTransform.position, myTransform.rotation);
-        spellTargeting = GameObject.FindGameObjectWithTag("SpellTarget").GetComponent<SpellTargeting>();
+    {
+        if (targetAndCharge)
+        {
+            Instantiate(spellTarget, myTransform.position, myTransform.rotation);
+            spellTargeting = GameObject.FindGameObjectWithTag("SpellTarget").GetComponent<SpellTargeting>();
+        }
+
+        if (!targetAndCharge)
+        {
+            canMove = false;
+            Instantiate(spellChargeRot, playerController.transform.position, playerController.transform.rotation);
+            chargeUpRot = GameObject.FindGameObjectWithTag("SpellCharger").GetComponent<ChargeUpRotate>();
+            readyToCharge = false;
+        }        
     }
 
     IEnumerator StopPlayerFor(float delay)
@@ -209,15 +257,78 @@ public class PlayerController : MonoBehaviour {
         canMove = true;
         Debug.Log("Wait Over");
     }
+    public void nonChargeUpSpellOn()
+    {
+        nonChargeUpSpell = true;
+    }
 
+    public void arcaneMissilesOn()
+    {
+        arcaneMissiles = true;
+    }
     void ArcaneMissileCast()
     {
-        if(spellTargeting.arcaneMissiles && spellTargeting.targetConfirmed && spellTargeting.chargedUpSpell)
+        if(arcaneMissiles && targetConfirmed && chargedUpSpell)
         {
-            spellTargeting.spellOver = false;
+            spellOver = false;
             Instantiate(arcMisSpell, myTransform.position, myTransform.rotation);
-            spellTargeting.arcaneMissiles = false;
+            arcaneMissiles = false;
             gameController.turnOver = true;
         }
+    }
+
+    public void arcaneBombOn()
+    {
+        arcaneBomb = true;
+    }
+    void ArcaneBombCast()
+    {
+        if(arcaneBomb && chargedUpSpell)
+        {
+            spellOver = false;
+            Instantiate(arcBombSpell, myTransform.position, myTransform.rotation);
+            arcaneBomb = false;
+            gameController.turnOver = true;
+        }
+    }
+
+    public void arcaneTeleportOn()
+    {
+        arcaneTeleport = true;
+    }
+    void ArcaneTeleportCast()
+    {
+        if(arcaneTeleport && targetConfirmed)
+        {
+            spellOver = false;
+            transform.position = spellTargeting.transform.position;
+            arcaneTeleport = false;
+            gameController.turnOver = true;
+            Destroy(spellTargeting.gameObject);
+        }
+    }
+
+    public void arcanePortalOn()
+    {
+        arcanePortal = true;
+    }
+    void ArcanePortalCast()
+    {
+        if(arcanePortal && targetConfirmed)
+        {
+            spellOver = false;
+            Vector3 aboveSpawn = new Vector3(transform.position.x, transform.position.y + 1.1f, transform.position.z);
+            Instantiate(arcPortal2, spellTargeting.transform.position, transform.rotation);
+            Instantiate(arcPortal1, aboveSpawn, transform.rotation);
+            cameraController.FocusTarget(arcPortal2);
+            arcanePortal = false;
+            gameController.turnOver = true;
+            canMove = true;
+        }
+    }
+
+    IEnumerator WaitFor(float delay)
+    {
+        yield return new WaitForSeconds(delay * Time.deltaTime);
     }
 }
